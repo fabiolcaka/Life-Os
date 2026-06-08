@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life OS · Founder</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0f0e0c;
+    --ink2: #3a3832;
+    --ink3: #7a7568;
+    --paper: #f7f5f0;
+    --paper2: #eeeae1;
+    --paper3: #e4dfd3;
+    --gold: #c8a94a;
+    --gold2: #8a7030;
+    --gold3: #f0e3b8;
+    --red: #c0392b;
+    --green: #2d6a4f;
+    --blue: #1a3a5c;
+    --border: rgba(15, 14, 12, 0.12);
+    --font-head: 'Syne', sans-serif;
+    --font-serif: 'DM Serif Display', serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-head);
+  }
+
+  /* ── Layout ── */
+  .app {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: 56px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .logo span {
+    color: var(--gold2);
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .date-badge {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-family: var(--font-mono);
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--paper);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--paper);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+  }
+  .nav-section {
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+  .nav-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding: 0 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--paper2); color: var(--ink); }
+  .nav-item.active { background: var(--ink); color: var(--paper); }
+  .nav-item .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+  .nav-item.active .dot { opacity: 1; }
+
+  .score-card {
+    margin: auto 16px 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .score-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 4px;
+  }
+  .score-num {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .score-sub {
+    font-size: 10px;
+    opacity: 0.4;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+  }
+
+  /* ── Main ── */
+  .main {
+    background: var(--paper);
+    overflow-y: auto;
+  }
+  .section {
+    display: none;
+    padding: 36px 36px 80px;
+  }
+  .section.active { display: block; }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 32px; }
+  .page-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink3);
+    margin-top: 5px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Grids ── */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card.dark {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: transparent;
+  }
+  .card.gold {
+    background: var(--gold3);
+    border-color: rgba(200, 169, 74, 0.3);
+  }
+  .card-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .card.dark .card-label { color: rgba(247, 245, 240, 0.4); }
+  .card-val {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .card.dark .card-val { color: var(--paper); }
+  .card-meta {
+    font-size: 11px;
+    color: var(--ink3);
+    margin-top: 5px;
+    font-family: var(--font-mono);
+  }
+  .card.dark .card-meta { color: rgba(247, 245, 240, 0.35); }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* ── Block title ── */
+  .block-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  /* ── Progress bars ── */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--paper3);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+  .progress-bar.green { background: var(--green); }
+  .progress-bar.red { background: var(--red); }
+
+  /* ── Goal rows ── */
+  .goal-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .goal-row:last-child { border-bottom: none; }
+  .goal-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .goal-status.done { background: var(--green); }
+  .goal-status.active { background: var(--gold); }
+  .goal-status.pending { background: transparent; border: 1px solid var(--ink3); }
+  .goal-text { flex: 1; font-size: 13px; font-weight: 500; letter-spacing: 0.01em; }
+  .goal-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-family: var(--font-mono);
+    background: var(--paper2);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .goal-pct {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink2);
+    font-family: var(--font-mono);
+    min-width: 36px;
+    text-align: right;
+  }
+  .goal-info { flex: 1; }
+
+  /* ── Editable Fields ── */
+  [contenteditable="true"] {
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  [contenteditable="true"]:hover {
+    background: rgba(200, 169, 74, 0.1);
+    border-color: var(--gold);
+  }
+  [contenteditable="true"]:focus {
+    background: rgba(200, 169, 74, 0.15);
+    border-color: var(--gold2);
+  }
+
+  /* ── Energy ── */
+  .energy-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .energy-day { text-align: center; }
+  .energy-day-label {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 6px;
+    font-family: var(--font-mono);
+  }
+  .energy-block {
+    height: 48px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: default;
+    transition: transform 0.1s;
+  }
+  .energy-block:hover { transform: scale(1.05); }
+  .e-high { background: #d4edda; color: var(--green); }
+  .e-med  { background: #ffeeba; color: #856404; }
+  .e-low  { background: #f8d7da; color: var(--red); }
+  .e-off  { background: var(--paper2); color: var(--ink3); }
+
+  /* ── Routines ── */
+  .routine-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    transition: opacity 0.15s;
+  }
+  .routine-item:last-child { border-bottom: none; }
+  .routine-item.done { opacity: 0.4; }
+  .routine-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .routine-check.checked { background: var(--ink); border-color: var(--ink); }
+  .routine-check.checked::after {
+    content: '✓';
+    font-size: 10px;
+    color: var(--paper);
+    font-weight: 700;
+  }
+  .routine-info { flex: 1; }
+  .routine-name { font-size: 13px; font-weight: 500; letter-spacing: 0.01em; }
+  .routine-time { font-size: 11px; color: var(--ink3); font-family: var(--font-mono); margin-top: 2px; }
+  .routine-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: auto;
+    align-self: center;
+  }
+  .tag-health { background: #d4edda; color: var(--green); }
+  .tag-mind   { background: #e2d9f3; color: #4a2c8a; }
+  .tag-work   { background: #dbeafe; color: var(--blue); }
+  .tag-life   { background: #ffeeba; color: #856404; }
+
+  /* ── Journal ── */
+  .journal-entry {
+    padding: 16px;
+    background: var(--paper2);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .journal-entry:hover { background: var(--paper3); }
+  .je-date {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-family: var(--font-mono);
+    margin-bottom: 6px;
+  }
+  .je-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .je-excerpt {
+    font-size: 12px;
+    color: var(--ink2);
+    line-height: 1.6;
+  }
+  .je-mood {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 8px;
+  }
+
+  /* ── Quote block ── */
+  .quote-block {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink2);
+    line-height: 1.55;
+    padding: 20px 24px;
+    border-left: 3px solid var(--gold);
+    margin: 24px 0;
+    background: var(--gold3);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* ── Pill row ── */
+  .pill-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .pill {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--ink2);
+  }
+
+  /* ── Calendar ── */
+  .calendar-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .cal-day {
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .cal-day:hover { background: var(--paper2); }
+  .cal-day.today { background: var(--ink); color: var(--paper); }
+  .cal-day-name {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    font-family: var(--font-mono);
+    margin-bottom: 4px;
+  }
+  .cal-day.today .cal-day-name { color: rgba(247, 245, 240, 0.5); }
+  .cal-day-num { font-size: 15px; font-weight: 700; }
+  .cal-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin: 4px auto 0;
+  }
+  .cal-day.today .cal-dot { background: rgba(247, 245, 240, 0.5); }
+
+  /* ── Events ── */
+  .event-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .event-row:last-child { border-bottom: none; }
+  .event-time {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--ink3);
+    min-width: 52px;
+    padding-top: 2px;
+  }
+  .event-bar {
+    width: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    align-self: stretch;
+    min-height: 36px;
+  }
+  .event-title { font-size: 13px; font-weight: 600; letter-spacing: 0.01em; }
+  .event-sub { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+
+  /* ── Insight rows ── */
+  .insight-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    background: var(--paper2);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .insight-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .insight-text h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .insight-text p  { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+
+  /* ── Focus rows ── */
+  .focus-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .focus-row:last-child { border-bottom: none; }
+  .focus-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .focus-text { font-size: 13px; font-weight: 500; }
+  .focus-area { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-mono); color: var(--ink3); }
+  .focus-info { flex: 1; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    transition: all 0.15s;
+    font-family: var(--font-head);
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.primary:hover { background: var(--ink2); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="logo">Life<span>OS</span> &nbsp;·&nbsp; Founder</div>
+    <div class="topbar-right">
+      <div class="date-badge" id="topbar-date"></div>
+      <div class="avatar" contenteditable="true" id="user-avatar" onblur="saveData()">F</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" onclick="show('dashboard', this)"><div class="dot"></div>Dashboard</div>
+      <div class="nav-item" onclick="show('goals', this)"><div class="dot"></div>Goals</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Daily</div>
+      <div class="nav-item" onclick="show('routines', this)"><div class="dot"></div>Routines</div>
+      <div class="nav-item" onclick="show('focus', this)"><div class="dot"></div>Focus</div>
+      <div class="nav-item" onclick="show('calendar', this)"><div class="dot"></div>Calendar</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Self</div>
+      <div class="nav-item" onclick="show('energy', this)"><div class="dot"></div>Energy</div>
+      <div class="nav-item" onclick="show('journal', this)"><div class="dot"></div>Journal</div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">Alignment Score</div>
+      <div class="score-num" id="score" contenteditable="true" onblur="saveData()">84</div>
+      <div class="score-sub">↑ +3 from last week</div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="section active" id="sec-dashboard">
+      <div class="page-header">
+        <div class="page-title">Good morning, <span contenteditable="true" id="user-name" onblur="saveData()">Fabiol</span>.</div>
+        <div class="page-sub">Week 23 · 3 priorities active · Energy trending high</div>
+      </div>
+      <div class="quote-block" contenteditable="true" id="dashboard-quote" onblur="saveData()">"The key is not to prioritise what's on your schedule, but to schedule your priorities."</div>
+      <div class="grid-3">
+        <div class="card dark">
+          <div class="card-label">Goals on track</div>
+          <div class="card-val" contenteditable="true" id="goals-track-val" onblur="saveData()">7 / 9</div>
+          <div class="card-meta" contenteditable="true" id="goals-track-meta" onblur="saveData()">78% completion rate</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Routines today</div>
+          <div class="card-val" id="dash-routines">4 / 7</div>
+          <div class="card-meta">click routines to update →</div>
+          <div class="progress-bar-wrap" style="margin-top:12px"><div class="progress-bar" id="dash-routines-bar" style="width:57%"></div></div>
+        </div>
+        <div class="card gold">
+          <div class="card-label">Deep work hours</div>
+          <div class="card-val" contenteditable="true" id="dw-hours-val" onblur="saveData()">3.5h</div>
+          <div class="card-meta" contenteditable="true" id="dw-hours-meta" onblur="saveData()">Target: 5h today</div>
+          <div class="progress-bar-wrap" style="margin-top:12px"><div class="progress-bar green" style="width:70%"></div></div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Today's Focus</div>
+      <div class="focus-row">
+        <div class="focus-num">1</div>
+        <div class="focus-info">
+          <div class="focus-text" contenteditable="true" id="focus-t1" onblur="saveData()">Finalise Q3 investor update deck</div>
+          <div class="focus-area" contenteditable="true" id="focus-a1" onblur="saveData()">Business · High stakes</div>
+        </div>
+      </div>
+      <div class="focus-row">
+        <div class="focus-num">2</div>
+        <div class="focus-info">
+          <div class="focus-text" contenteditable="true" id="focus-t2" onblur="saveData()">30-min walk · no phone</div>
+          <div class="focus-area" contenteditable="true" id="focus-a2" onblur="saveData()">Health · Energy reset</div>
+        </div>
+      </div>
+      <div class="focus-row">
+        <div class="focus-num">3</div>
+        <div class="focus-info">
+          <div class="focus-text" contenteditable="true" id="focus-t3" onblur="saveData()">Call with co-founder re: hiring plan</div>
+          <div class="focus-area" contenteditable="true" id="focus-a3" onblur="saveData()">Team · Relationship</div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Weekly Insights</div>
+      <div class="insight-row">
+        <div class="insight-icon">⚡</div>
+        <div class="insight-text">
+          <h4 contenteditable="true" id="insight-h1" onblur="saveData()">Energy peaks on Tues &amp; Wed</h4>
+          <p contenteditable="true" id="insight-p1" onblur="saveData()">Schedule high-stakes decisions and creative work in these windows for best output.</p>
+        </div>
+      </div>
+      <div class="insight-row">
+        <div class="insight-icon">🎯</div>
+        <div class="insight-text">
+          <h4 contenteditable="true" id="insight-h2" onblur="saveData()">Revenue goal is 12% behind</h4>
+          <p contenteditable="true" id="insight-p2" onblur="saveData()">You're on track in every area except revenue. Consider reviewing your outreach cadence this week.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-goals">
+      <div class="page-header">
+        <div class="page-title">Goals</div>
+        <div class="page-sub">9 active goals across 4 areas of life</div>
+      </div>
+      <div class="grid-3">
+        <div class="card"><div class="card-label">Business</div><div class="card-val">3</div><div class="card-meta">2 on track · 1 at risk</div></div>
+        <div class="card"><div class="card-label">Health</div><div class="card-val">2</div><div class="card-meta">2 on track</div></div>
+        <div class="card"><div class="card-label">Relationships</div><div class="card-val">2</div><div class="card-meta">1 on track · 1 pending</div></div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Business</div>
+      <div class="goal-row">
+        <div class="goal-status active"></div>
+        <div class="goal-info">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="goal-text" contenteditable="true" id="goal-b1-txt" onblur="saveData()">Reach €500k ARR by Dec</div>
+            <div class="goal-tag" contenteditable="true" id="goal-b1-tag" onblur="saveData()">Revenue</div>
+            <div class="goal-pct" contenteditable="true" id="goal-b1-pct" onblur="saveData()">62%</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar" id="goal-b1-bar" style="width:62%"></div></div>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-status done"></div>
+        <div class="goal-info">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="goal-text" contenteditable="true" id="goal-b2-txt" onblur="saveData()">Hire 2 senior engineers</div>
+            <div class="goal-tag" contenteditable="true" id="goal-b2-tag" onblur="saveData()">Team</div>
+            <div class="goal-pct" contenteditable="true" id="goal-b2-pct" onblur="saveData()">100%</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar green" id="goal-b2-bar" style="width:100%"></div></div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Health</div>
+      <div class="goal-row">
+        <div class="goal-status done"></div>
+        <div class="goal-info">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="goal-text" contenteditable="true" id="goal-h1-txt" onblur="saveData()">Run a half marathon</div>
+            <div class="goal-tag" contenteditable="true" id="goal-h1-tag" onblur="saveData()">Fitness</div>
+            <div class="goal-pct" contenteditable="true" id="goal-h1-pct" onblur="saveData()">100%</div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar green" id="goal-h1-bar" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-routines">
+      <div class="page-header">
+        <div class="page-title">Routines</div>
+        <div class="page-sub">Your daily architecture — protect it like your equity</div>
+      </div>
+      <div class="grid-2">
+        <div class="card dark"><div class="card-label">Completed today</div><div class="card-val" id="rt-done">4 / 7</div></div>
+        <div class="card"><div class="card-label">7-day streak</div><div class="card-val">14</div><div class="card-meta">Personal best: 21 days</div></div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Morning Block</div>
+      <div id="routine-list">
+        <div class="routine-item done" id="rt-item-1">
+          <div class="routine-check checked" onclick="toggleRoutine(this.parentNode)"></div>
+          <div class="routine-info">
+            <div class="routine-name" contenteditable="true" id="rt-n1" onblur="saveData()">5:30 AM · Wake up</div>
+            <div class="routine-time" contenteditable="true" id="rt-t1" onblur="saveData()">No snooze rule</div>
+          </div>
+          <span class="routine-tag tag-health">Health</span>
+        </div>
+        <div class="routine-item done" id="rt-item-2">
+          <div class="routine-check checked" onclick="toggleRoutine(this.parentNode)"></div>
+          <div class="routine-info">
+            <div class="routine-name" contenteditable="true" id="rt-n2" onblur="saveData()">5:45 AM · Cold shower</div>
+            <div class="routine-time" contenteditable="true" id="rt-t2" onblur="saveData()">3 min · cortisol reset</div>
+          </div>
+          <span class="routine-tag tag-health">Health</span>
+        </div>
+        <div class="routine-item done" id="rt-item-3">
+          <div class="routine-check checked" onclick="toggleRoutine(this.parentNode)"></div>
+          <div class="routine-info">
+            <div class="routine-name" contenteditable="true" id="rt-n3" onblur="saveData()">6:00 AM · Meditation</div>
+            <div class="routine-time" contenteditable="true" id="rt-t3" onblur="saveData()">20 min · Waking Up app</div>
+          </div>
+          <span class="routine-tag tag-mind">Mind</span>
+        </div>
+        <div class="routine-item done" id="rt-item-4">
+          <div class="routine-check checked" onclick="toggleRoutine(this.parentNode)"></div>
+          <div class="routine-info">
+            <div class="routine-name" contenteditable="true" id="rt-n4" onblur="saveData()">6:30 AM · Journaling</div>
+            <div class="routine-time" contenteditable="true" id="rt-t4" onblur="saveData()">3 prompts · gratitude + intention</div>
+          </div>
+          <span class="routine-tag tag-mind">Mind</span>
+        </div>
+        <div class="routine-item" id="rt-item-5">
+          <div class="routine-check" onclick="toggleRoutine(this.parentNode)"></div>
+          <div class="routine-info">
+            <div class="routine-name" contenteditable="true" id="rt-n5" onblur="saveData()">7:00 AM · Exercise</div>
+            <div class="routine-time" contenteditable="true" id="rt-t5" onblur="saveData()">45 min · strength or run</div>
+          </div>
+          <span class="routine-tag tag-health">Health</span>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Evening Block</div>
+      <div class="routine-item" id="rt-item-6">
+        <div class="routine-check" onclick="toggleRoutine(this.parentNode)"></div>
+        <div class="routine-info">
+          <div class="routine-name" contenteditable="true" id="rt-n6" onblur="saveData()">9:00 PM · Device shutdown</div>
+          <div class="routine-time" contenteditable="true" id="rt-t6" onblur="saveData()">No screens after this</div>
+        </div>
+        <span class="routine-tag tag-life">Life</span>
+      </div>
+      <div class="routine-item" id="rt-item-7">
+        <div class="routine-check" onclick="toggleRoutine(this.parentNode)"></div>
+        <div class="routine-info">
+          <div class="routine-name" contenteditable="true" id="rt-n7" onblur="saveData()">9:30 PM · Reading</div>
+          <div class="routine-time" contenteditable="true" id="rt-t7" onblur="saveData()">30 min minimum</div>
+        </div>
+        <span class="routine-tag tag-mind">Mind</span>
+      </div>
+    </div>
+
+    <div class="section" id="sec-focus">
+      <div class="page-header">
+        <div class="page-title">Deep Work</div>
+        <div class="page-sub">Protect the hours that compound</div>
+      </div>
+      <div class="grid-3">
+        <div class="card dark"><div class="card-label">Today</div><div class="card-val">3.5h</div><div class="card-meta">Target: 5h</div></div>
+        <div class="card"><div class="card-label">This week</div><div class="card-val">16h</div><div class="card-meta">Target: 25h</div></div>
+        <div class="card gold"><div class="card-label">Best day</div><div class="card-val">7.2h</div><div class="card-meta">Last Tuesday</div></div>
+      </div>
+      <hr class="divider">
+      <div class="block-title">Today's Sessions</div>
+      <div class="focus-row">
+        <div class="focus-num">✓</div>
+        <div class="focus-info">
+          <div class="focus-text" contenteditable="true" id="dw-t1" onblur="saveData()">Investor deck — slides 1–8</div>
+          <div class="focus-area" contenteditable="true" id="dw-a1" onblur="saveData()">6:00 AM – 8:30 AM · 2.5h · Flow state</div>
+        </div>
+      </div>
+      <div class="focus-row">
+        <div class="focus-num">✓</div>
+        <div class="focus-info">
+          <div class="focus-text" contenteditable="true" id="dw-t2" onblur="saveData()">Product strategy doc</div>
+          <div class="focus-area" contenteditable="true" id="dw-a2" onblur="saveData()">10:00 AM – 11:00 AM · 1h · Good</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-calendar">
+      <div class="page-header">
+        <div class="page-title">Calendar</div>
+        <div class="page-sub">Your time is your most finite resource</div>
+      </div>
+      <div class="calendar-strip" id="cal-strip"></div>
+      <hr class="divider">
+      <div class="block-title">Today's Schedule</div>
+      <div class="event-row">
+        <div class="event-time" contenteditable="true" id="cal-time1" onblur="saveData()">6:00 AM</div>
+        <div class="event-bar" style="background:var(--green)"></div>
+        <div>
+          <div class="event-title" contenteditable="true" id="cal-title1" onblur="saveData()">Deep Work — Investor Deck</div>
+          <div class="event-sub" contenteditable="true" id="cal-sub1" onblur="saveData()">Solo · No meetings · 2.5h block</div>
+        </div>
+      </div>
+      <div class="event-row">
+        <div class="event-time" contenteditable="true" id="cal-time2" onblur="saveData()">9:00 AM</div>
+        <div class="event-bar" style="background:var(--blue)"></div>
+        <div>
+          <div class="event-title" contenteditable="true" id="cal-title2" onblur="saveData()">Co-founder sync</div>
+          <div class="event-sub" contenteditable="true" id="cal-sub2" onblur="saveData()">Weekly check-in · 30 min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-energy">
+      <div class="page-header">
+        <div class="page-title">Energy</div>
+        <div class="page-sub">You can't pour from an empty vessel</div>
+      </div>
+      <div class="block-title">This week</div>
+      <div class="energy-grid">
+        <div class="energy-day"><div class="energy-day-label">Mon</div><div class="energy-block e-high">H</div></div>
+        <div class="energy-day"><div class="energy-day-label">Tue</div><div class="energy-block e-high">H</div></div>
+        <div class="energy-day"><div class="energy-day-label">Wed</div><div class="energy-block e-high">H</div></div>
+        <div class="energy-day"><div class="energy-day-label">Thu</div><div class="energy-block e-med">M</div></div>
+        <div class="energy-day"><div class="energy-day-label">Fri</div><div class="energy-block e-med">M</div></div>
+        <div class="energy-day"><div class="energy-day-label">Sat</div><div class="energy-block e-off">—</div></div>
+        <div class="energy-day"><div class="energy-day-label">Sun</div><div class="energy-block e-off">—</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-journal">
+      <div class="page-header">
+        <div class="page-title">Journal</div>
+        <div class="page-sub">Clarity through reflection</div>
+      </div>
+      <div class="block-title">This week</div>
+      <div class="journal-entry">
+        <div class="je-date">Mon 9 Jun · 6:32 AM</div>
+        <div class="je-title" contenteditable="true" id="jr-title1" onblur="saveData()">The danger of being busy vs. being productive</div>
+        <div class="je-excerpt" contenteditable="true" id="jr-exc1" onblur="saveData()">Realised this morning that I've been filling my calendar as a way to feel progress. Activity ≠ output. Need to ruthlessly cut three recurring meetings...</div>
+        <span class="je-mood" style="background:#d4edda;color:var(--green)">Clarity</span>
+      </div>
+    </div>
+
+  </div></div><script>
+  // Date
+  const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now    = new Date();
+  document.getElementById('topbar-date').textContent =
+    days[now.getDay()] + ' · ' + months[now.getMonth()] + ' ' + now.getDate() + ' ' + now.getFullYear();
+
+  // Calendar strip
+  const strip = document.getElementById('cal-strip');
+  const today = now.getDate();
+  for (let i = -3; i <= 3; i++) {
+    const d = new Date(now);
+    d.setDate(today + i);
+    const el = document.createElement('div');
+    el.className = 'cal-day' + (i === 0 ? ' today' : '');
+    const hasDot = i !== 2 && i !== 3;
+    el.innerHTML =
+      `<div class="cal-day-name">${days[d.getDay()]}</div>` +
+      `<div class="cal-day-num">${d.getDate()}</div>` +
+      (hasDot ? '<div class="cal-dot"></div>' : '');
+    strip.appendChild(el);
+  }
+
+  // Navigation
+  function show(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  // Routines mechanics
+  let rtTotal = 7, rtDone = 4;
+
+  function updateRoutineCount() {
+    const txt = rtDone + ' / ' + rtTotal;
+    document.getElementById('rt-done').textContent = txt;
+    document.getElementById('dash-routines').textContent = txt;
+    document.getElementById('dash-routines-bar').style.width = Math.round((rtDone / rtTotal) * 100) + '%';
+  }
+
+  function toggleRoutine(el) {
+    const chk = el.querySelector('.routine-check');
+    const isDone = chk.classList.contains('checked');
+    if (isDone) {
+      chk.classList.remove('checked');
+      el.classList.remove('done');
+      rtDone--;
+    } else {
+      chk.classList.add('checked');
+      el.classList.add('done');
+      rtDone++;
+    }
+    updateRoutineCount();
+    saveData();
+  }
+
+  // LocalStorage Auto-Save Engines
+  function saveData() {
+    const editableElements = document.querySelectorAll('[contenteditable="true"]');
+    editableElements.forEach(el => {
+      localStorage.setItem(el.id, el.innerHTML);
+    });
+
+    // Save checked states of routines
+    const routines = [];
+    document.querySelectorAll('.routine-item').forEach(item => {
+      routines.push({
+        id: item.id,
+        done: item.classList.contains('done')
+      });
+    });
+    localStorage.setItem('routinesState', JSON.stringify(routines));
+
+    // Dynamic bar sync for goal percentages if changed manually
+    syncGoalBars();
+  }
+
+  function loadData() {
+    const editableElements = document.querySelectorAll('[contenteditable="true"]');
+    editableElements.forEach(el => {
+      const savedValue = localStorage.getItem(el.id);
+      if (savedValue !== null) {
+        el.innerHTML = savedValue;
+      }
+    });
+
+    // Load routine states safely
+    const savedRoutines = localStorage.getItem('routinesState');
+    if (savedRoutines) {
+      const routines = JSON.parse(savedRoutines);
+      rtDone = 0;
+      routines.forEach(rt => {
+        const item = document.getElementById(rt.id);
+        if (item) {
+          const chk = item.querySelector('.routine-check');
+          if (rt.done) {
+            item.classList.add('done');
+            chk.classList.add('checked');
+            rtDone++;
+          } else {
+            item.classList.remove('done');
+            chk.classList.remove('checked');
+          }
+        }
+      });
+    }
+    updateRoutineCount();
+    syncGoalBars();
+  }
+
+  function syncGoalBars() {
+    // Automatically matches progress bars to text updates if edited
+    ['goal-b1', 'goal-b2', 'goal-h1'].forEach(id => {
+      const pctEl = document.getElementById(id + '-pct');
+      const barEl = document.getElementById(id + '-bar');
+      if (pctEl && barEl) {
+        let val = parseInt(pctEl.textContent) || 0;
+        barEl.style.width = Math.min(Math.max(val, 0), 100) + '%';
+      }
+    });
+  }
+
+  // Initialize on page load
+  window.onload = loadData;
+</script>
+
+</body>
+</html>
